@@ -8,7 +8,7 @@
   --surface: #0f1424;
   --surface-alt: #111828;
   --border: #1a2035;
-  --muted: #6b6b76;
+  --muted: #8b8b9a;
   --cyan: #06b6d4;
   --rose: #be185d;
   --yellow: #eab308;
@@ -90,14 +90,14 @@ body {
 }
 
 .panel-title {
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.1em;
   color: var(--muted);
 }
 
 .panel-badge {
-  font-size: 10px;
+  font-size: 13px;
   letter-spacing: 0.05em;
   color: var(--muted);
 }

@@ -16,9 +16,9 @@ const colorMap = {
 };
 
 const borderMap = {
-  cyan: "border-[var(--cyan)]/15",
-  rose: "border-[var(--rose)]/15",
-  yellow: "border-[var(--yellow)]/15",
+  cyan: "border-[#0f2a35]",
+  rose: "border-[#2a0f1e]",
+  yellow: "border-[#2a2500]",
   white: "border-[var(--border)]",
 };
 
@@ -33,15 +33,15 @@ export default function StatCard({
     <div
       className={`bg-[var(--surface)] border ${borderMap[color]} rounded-sm px-3 py-2 flex flex-col gap-1`}
     >
-      <div className="flex items-center gap-1.5 text-[var(--muted)] text-[8px] font-medium tracking-widest">
+      <div className="flex items-center gap-1.5 text-[var(--muted)] text-[11px] font-medium tracking-widest">
         {icon}
         {label}
       </div>
-      <div className={`text-lg font-bold tracking-tight leading-none ${colorMap[color]}`}>
+      <div className={`text-xl font-bold tracking-tight leading-none ${colorMap[color]}`}>
         {value}
       </div>
       {sub && (
-        <div className="text-[var(--muted)] text-[7px] tracking-wider leading-none">
+        <div className="text-[var(--muted)] text-[11px] tracking-wider leading-none">
           {sub}
         </div>
       )}

@@ -27,10 +27,10 @@ export default function ChartTps({ blocks }: Props) {
   const total = blocks.reduce((s, b) => s + b.txCount, 0);
 
   return (
-    <div className="panel flex flex-col h-full">
+    <div className="panel flex flex-col h-full overflow-hidden">
       <div className="panel-header">
         <span className="panel-title">TX PER BLOCK</span>
-        <span className="text-[10px] text-[var(--cyan)] tracking-wider font-mono">
+        <span className="text-[12px] text-[var(--cyan)] tracking-wider font-mono">
           {total.toLocaleString()} TOTAL
         </span>
       </div>
@@ -40,14 +40,14 @@ export default function ChartTps({ blocks }: Props) {
             <CartesianGrid strokeDasharray="3 3" stroke="#1a2035" vertical={false} />
             <XAxis
               dataKey="block"
-              tick={{ fontSize: 8, fill: "#6b6b76" }}
+              tick={{ fontSize: 11, fill: "#8b8b9a" }}
               tickLine={false}
               axisLine={false}
               tickFormatter={(v: number) => `${v}`}
               interval="preserveStartEnd"
             />
             <YAxis
-              tick={{ fontSize: 8, fill: "#6b6b76" }}
+              tick={{ fontSize: 11, fill: "#8b8b9a" }}
               tickLine={false}
               axisLine={false}
               allowDecimals={false}
@@ -58,7 +58,7 @@ export default function ChartTps({ blocks }: Props) {
                 background: "#0f1424",
                 border: "1px solid #1a2035",
                 borderRadius: 2,
-                fontSize: 9,
+                fontSize: 11,
                 textTransform: "uppercase",
                 letterSpacing: "0.05em",
               }}

@@ -44,7 +44,7 @@ export default function ChartValidators({ active, inactive, total }: Props) {
             </PieChart>
           </ResponsiveContainer>
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <span className="text-sm font-bold text-[var(--white)] leading-none">
+            <span className="text-base font-bold text-[var(--white)] leading-none">
               {active}
             </span>
           </div>
@@ -52,13 +52,13 @@ export default function ChartValidators({ active, inactive, total }: Props) {
         <div className="flex flex-col gap-1.5 flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-[var(--cyan)] shrink-0" />
-            <span className="text-[8px] text-[var(--muted)] tracking-widest">ACTIVE</span>
-            <span className="text-[10px] font-bold text-[var(--cyan)] ml-auto">{active}</span>
+            <span className="text-[11px] text-[var(--muted)] tracking-widest">ACTIVE</span>
+            <span className="text-[12px] font-bold text-[var(--cyan)] ml-auto">{active}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-[var(--rose)] shrink-0" />
-            <span className="text-[8px] text-[var(--muted)] tracking-widest">INACTIVE</span>
-            <span className="text-[10px] font-bold text-[var(--rose)] ml-auto">{inactive}</span>
+            <span className="text-[11px] text-[var(--muted)] tracking-widest">INACTIVE</span>
+            <span className="text-[12px] font-bold text-[var(--rose)] ml-auto">{inactive}</span>
           </div>
           <div className="w-full h-0.5 bg-[var(--border)] rounded-full overflow-hidden">
             <div

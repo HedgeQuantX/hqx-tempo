@@ -19,18 +19,18 @@ export default function EpochBar({
     <div className="bg-[var(--surface)] border border-[var(--border)] rounded-sm px-3 py-1.5">
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-3">
-          <span className="text-[9px] font-semibold tracking-widest text-[var(--cyan)]">
+          <span className="text-[11px] font-semibold tracking-widest text-[var(--cyan)]">
             EPOCH {epoch}
           </span>
-          <span className="text-[9px] text-[var(--muted)]">
+          <span className="text-[11px] text-[var(--muted)]">
             {progress.toLocaleString()} / {epochLength.toLocaleString()}
           </span>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-[9px] text-[var(--muted)] tracking-wider">
+          <span className="text-[11px] text-[var(--muted)] tracking-wider">
             ~{Math.round((epochLength - progress) * 2)}S LEFT
           </span>
-          <span className="text-[9px] text-[var(--muted)] tracking-wider">
+          <span className="text-[11px] text-[var(--muted)] tracking-wider">
             NEXT DKG: EPOCH {nextFullDkg}
           </span>
         </div>

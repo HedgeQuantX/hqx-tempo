@@ -10,29 +10,57 @@ import type {
 } from "./types";
 
 const HISTORY_DEPTH = 30;
+const BATCH_SIZE = 5;
+const MAX_RETRIES = 4;
+const BASE_DELAY_MS = 50;
+
+async function sleep(ms: number): Promise<void> {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+async function withRetry<T>(fn: () => Promise<T>): Promise<T> {
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      return await fn();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      const isRateLimit = msg.includes("429") || msg.includes("rate limit");
+      if (!isRateLimit || attempt === MAX_RETRIES) throw err;
+      await sleep(BASE_DELAY_MS * Math.pow(2, attempt));
+    }
+  }
+  throw new Error("unreachable");
+}
 
 async function fetchBlockHistory(): Promise<{
   samples: BlockSample[];
   network: NetworkMetrics;
   recentTx: RecentTx[];
 }> {
-  const latest = await client.getBlock({
-    blockTag: "latest",
-    includeTransactions: true,
-  });
+  const latest = await withRetry(() =>
+    client.getBlock({ blockTag: "latest", includeTransactions: true })
+  );
 
   const blockNumbers = Array.from(
     { length: HISTORY_DEPTH },
     (_, i) => latest.number - BigInt(i)
   );
 
-  const blocks = await Promise.all(
-    blockNumbers.map((n) =>
-      n === latest.number
-        ? Promise.resolve(latest)
-        : client.getBlock({ blockNumber: n, includeTransactions: true })
-    )
-  );
+  // Fetch in small batches to avoid RPC rate limits.
+  const blocks = [latest];
+  const remaining = blockNumbers.slice(1); // skip latest, already fetched
+  for (let i = 0; i < remaining.length; i += BATCH_SIZE) {
+    const batch = remaining.slice(i, i + BATCH_SIZE);
+    const results = await Promise.all(
+      batch.map((n) =>
+        withRetry(() =>
+          client.getBlock({ blockNumber: n, includeTransactions: true })
+        )
+      )
+    );
+    blocks.push(...results);
+    if (i + BATCH_SIZE < remaining.length) await sleep(BASE_DELAY_MS);
+  }
 
   // Oldest first for charts
   blocks.reverse();
@@ -125,17 +153,21 @@ async function fetchBlockHistory(): Promise<{
 
 export async function fetchDashboardData(): Promise<DashboardData> {
   const [validators, blockNumber, nextFullDkg, history] = await Promise.all([
-    client.readContract({
-      address: VALIDATOR_CONFIG_ADDRESS,
-      abi: validatorConfigAbi,
-      functionName: "getValidators",
-    }),
-    client.getBlockNumber(),
-    client.readContract({
-      address: VALIDATOR_CONFIG_ADDRESS,
-      abi: validatorConfigAbi,
-      functionName: "getNextFullDkgCeremony",
-    }),
+    withRetry(() =>
+      client.readContract({
+        address: VALIDATOR_CONFIG_ADDRESS,
+        abi: validatorConfigAbi,
+        functionName: "getValidators",
+      })
+    ),
+    withRetry(() => client.getBlockNumber()),
+    withRetry(() =>
+      client.readContract({
+        address: VALIDATOR_CONFIG_ADDRESS,
+        abi: validatorConfigAbi,
+        functionName: "getNextFullDkgCeremony",
+      })
+    ),
     fetchBlockHistory(),
   ]);
 

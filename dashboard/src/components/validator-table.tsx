@@ -22,15 +22,15 @@ export default function ValidatorTable({ validators, onSelect }: ValidatorTableP
   return (
     <div className="bg-[var(--surface)] border border-[var(--border)] rounded-sm flex flex-col min-h-0 flex-1">
       <div className="px-4 py-2.5 border-b border-[var(--border)] flex items-center justify-between shrink-0">
-        <span className="text-[10px] font-semibold tracking-widest text-[var(--muted)]">
+        <span className="text-[12px] font-semibold tracking-widest text-[var(--muted)]">
           VALIDATOR SET
         </span>
-        <span className="text-[10px] text-[var(--muted)] tracking-wider">
+        <span className="text-[12px] text-[var(--muted)] tracking-wider">
           {validators.length} TOTAL
         </span>
       </div>
       <div className="overflow-y-auto min-h-0 flex-1">
-        <table className="w-full text-[11px]">
+        <table className="w-full text-[13px]">
           <thead className="sticky top-0 bg-[var(--surface)] z-10">
             <tr className="border-b border-[var(--border)] text-[var(--muted)]">
               <th className="text-left px-4 py-2 font-medium tracking-widest w-10">
@@ -60,16 +60,22 @@ export default function ValidatorTable({ validators, onSelect }: ValidatorTableP
                 <tr
                   key={v.publicKey}
                   onClick={() => onSelect?.(v)}
-                  className="border-b border-[var(--border)]/30 row-hover cursor-pointer"
+                  className="border-b border-[#141a2d] row-hover cursor-pointer"
                 >
                   <td className="px-4 py-2 text-[var(--muted)] font-mono">
                     {v.index}
                   </td>
                   <td className="px-4 py-2">
                     {name ? (
-                      <span className="text-[var(--cyan)] font-semibold tracking-wider">
+                      <a
+                        href={`https://explore.tempo.xyz/address/${v.validatorAddress}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-[var(--cyan)] font-semibold tracking-wider hover:underline"
+                      >
                         {name}
-                      </span>
+                      </a>
                     ) : (
                       <span className="text-[var(--muted)]">--</span>
                     )}
@@ -84,7 +90,7 @@ export default function ValidatorTable({ validators, onSelect }: ValidatorTableP
                         }`}
                       />
                       <span
-                        className={`text-[10px] font-medium tracking-wider ${
+                        className={`text-[12px] font-medium tracking-wider ${
                           v.active
                             ? "text-[var(--cyan)]"
                             : "text-[var(--rose)]"
@@ -94,13 +100,21 @@ export default function ValidatorTable({ validators, onSelect }: ValidatorTableP
                       </span>
                     </span>
                   </td>
-                  <td className="px-4 py-2 font-mono text-[var(--white)]/50">
+                  <td className="px-4 py-2 font-mono text-[#808090]">
                     {truncate(v.publicKey)}
                   </td>
-                  <td className="px-4 py-2 font-mono text-[var(--white)]/30">
-                    {truncate(v.validatorAddress, 6)}
+                  <td className="px-4 py-2 font-mono">
+                    <a
+                      href={`https://explore.tempo.xyz/address/${v.validatorAddress}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-[#505060] hover:text-[var(--cyan)] transition-colors"
+                    >
+                      {truncate(v.validatorAddress, 6)}
+                    </a>
                   </td>
-                  <td className="px-4 py-2 font-mono text-[var(--white)]/30">
+                  <td className="px-4 py-2 font-mono text-[#505060]">
                     {v.inboundAddress || "--"}
                   </td>
                 </tr>

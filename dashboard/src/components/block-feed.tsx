@@ -30,7 +30,7 @@ export default function BlockFeed({ blocks }: Props) {
   const sorted = [...blocks].reverse(); // newest first
 
   return (
-    <div className="panel flex flex-col h-full">
+    <div className="panel flex flex-col h-full min-h-0 overflow-hidden">
       <div className="panel-header">
         <div className="flex items-center gap-2">
           <IconCube className="w-3 h-3 text-[var(--cyan)]" />
@@ -42,11 +42,11 @@ export default function BlockFeed({ blocks }: Props) {
         {sorted.map((b) => (
           <div
             key={b.number}
-            className="flex items-center gap-3 px-4 py-2.5 border-b border-[var(--border)]/30 row-hover fade-in"
+            className="flex items-center gap-3 px-4 py-2.5 border-b border-[#141a2d] row-hover fade-in"
           >
             {/* Block icon + number */}
             <div className="flex items-center gap-2 min-w-0 shrink-0">
-              <div className="w-8 h-8 rounded-sm bg-[var(--cyan)]/10 flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-sm bg-[#0c1a2a] flex items-center justify-center shrink-0">
                 <IconCube className="w-3.5 h-3.5 text-[var(--cyan)]" />
               </div>
               <div className="flex flex-col min-w-0">
@@ -54,33 +54,38 @@ export default function BlockFeed({ blocks }: Props) {
                   href={`https://explore.tempo.xyz/block/${b.number}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[11px] font-bold text-[var(--cyan)] hover:underline"
+                  className="text-[13px] font-bold text-[var(--cyan)] hover:underline"
                 >
                   #{b.number.toLocaleString()}
                 </a>
-                <span className="text-[8px] text-[var(--muted)] tracking-wider">
+                <span className="text-[11px] text-[var(--muted)] tracking-wider">
                   {timeSince(b.timestamp)}
                 </span>
               </div>
             </div>
 
             {/* Hash */}
-            <span className="text-[9px] font-mono text-[var(--white)]/25 hidden xl:block flex-1 truncate">
+            <a
+              href={`https://explore.tempo.xyz/block/${b.number}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[11px] font-mono text-[#404050] hover:text-[var(--cyan)] hidden xl:block flex-1 truncate transition-colors"
+            >
               {truncate(b.hash, 10)}
-            </span>
+            </a>
 
             {/* Stats */}
             <div className="flex items-center gap-3 ml-auto shrink-0">
               <div className="text-right">
-                <div className="text-[10px] font-bold text-[var(--white)]/80">
+                <div className="text-[12px] font-bold text-[#c8c8d0]">
                   {b.txCount} TX
                 </div>
-                <div className="text-[8px] text-[var(--muted)]">
+                <div className="text-[11px] text-[var(--muted)]">
                   {formatGas(b.gasUsed)} GAS
                 </div>
               </div>
               {b.blockTime !== null && (
-                <span className="text-[9px] font-mono text-[var(--muted)] w-8 text-right">
+                <span className="text-[11px] font-mono text-[var(--muted)] w-10 text-right">
                   {b.blockTime}S
                 </span>
               )}
