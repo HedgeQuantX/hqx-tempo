@@ -1,0 +1,18 @@
+# secrets
+secrets/
+.env
+
+# node modules
+dashboard/node_modules/
+dashboard/.next/
+
+# tempo source (fork, not our code)
+contrib/
+
+# validator data
+data/
+logs/
+
+# os
+.DS_Store
+*.swp

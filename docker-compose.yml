@@ -1,0 +1,78 @@
+# ============================================================
+# hedgequantx — Tempo Validator Stack
+# ============================================================
+# Production-grade, security-hardened Docker Compose
+# ============================================================
+
+services:
+
+  validator:
+    image: ${TEMPO_IMAGE}
+    container_name: ${VALIDATOR_NAME}-validator
+    restart: unless-stopped
+    stop_grace_period: 60s
+    command:
+      - node
+      - --datadir=${DATADIR}
+      - --chain=${TEMPO_CHAIN}
+      - --port=${P2P_PORT}
+      - --discovery.addr=0.0.0.0
+      - --discovery.port=${P2P_PORT}
+      - --consensus.signing-key=${SIGNING_KEY}
+      - --consensus.fee-recipient=${FEE_RECIPIENT}
+      - --consensus.datadir=${CONSENSUS_DATADIR}
+      - --http
+      - --http.addr=127.0.0.1
+      - --http.port=${RPC_PORT}
+      - --http.api=eth,net,web3
+      - --ws
+      - --ws.addr=127.0.0.1
+      - --ws.port=${WS_PORT}
+      - --metrics=${METRICS_PORT}
+    environment:
+      - RUST_LOG=${RUST_LOG}
+    volumes:
+      - validator-data:${DATADIR}
+      - ${PWD}/secrets/validator.key:${SIGNING_KEY}:ro
+    ports:
+      - "${P2P_PORT}:${P2P_PORT}/tcp"
+      - "${P2P_PORT}:${P2P_PORT}/udp"
+      - "${CONSENSUS_PORT}:${CONSENSUS_PORT}/tcp"
+    expose:
+      - "${RPC_PORT}"
+      - "${WS_PORT}"
+      - "${METRICS_PORT}"
+    networks:
+      - tempo-internal
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:size=256M
+      - /root/.cache:size=512M
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "5"
+        tag: "hedgequantx-validator"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:${RPC_PORT} --post-data='{\"jsonrpc\":\"2.0\",\"method\":\"net_version\",\"params\":[],\"id\":1}' --header='Content-Type:application/json' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+volumes:
+  validator-data:
+    name: hedgequantx-data
+
+networks:
+  tempo-internal:
+    name: hedgequantx-net
+    driver: bridge
+    internal: false
