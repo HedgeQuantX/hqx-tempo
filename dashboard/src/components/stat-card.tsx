@@ -31,17 +31,17 @@ export default function StatCard({
 }: StatCardProps) {
   return (
     <div
-      className={`bg-[var(--surface)] border ${borderMap[color]} rounded-sm p-3 flex flex-col gap-1.5`}
+      className={`bg-[var(--surface)] border ${borderMap[color]} rounded-sm px-3 py-2 flex flex-col gap-1`}
     >
-      <div className="flex items-center gap-1.5 text-[var(--muted)] text-[9px] font-medium tracking-widest">
+      <div className="flex items-center gap-1.5 text-[var(--muted)] text-[8px] font-medium tracking-widest">
         {icon}
         {label}
       </div>
-      <div className={`text-xl font-bold tracking-tight leading-none ${colorMap[color]}`}>
+      <div className={`text-lg font-bold tracking-tight leading-none ${colorMap[color]}`}>
         {value}
       </div>
       {sub && (
-        <div className="text-[var(--muted)] text-[8px] tracking-wider">
+        <div className="text-[var(--muted)] text-[7px] tracking-wider leading-none">
           {sub}
         </div>
       )}

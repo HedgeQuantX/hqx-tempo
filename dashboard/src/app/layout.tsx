@@ -9,9 +9,12 @@ const rajdhani = Rajdhani({
 });
 
 export const metadata: Metadata = {
-  title: "TEMPO VALIDATOR DASHBOARD | HEDGEQUANTX",
+  title: "TEMPO MONITOR | HEDGEQUANTX",
   description:
-    "REAL-TIME VALIDATOR MONITORING FOR THE TEMPO NETWORK. BUILT BY HEDGEQUANTX.",
+    "REAL-TIME NETWORK MONITORING FOR THE TEMPO BLOCKCHAIN. BUILT BY HEDGEQUANTX.",
+  icons: {
+    icon: "/icon.svg",
+  },
 };
 
 export default function RootLayout({

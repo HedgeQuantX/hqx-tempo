@@ -20,7 +20,6 @@ import {
   IconClock,
   IconBolt,
   IconFire,
-  IconChart,
   IconRefresh,
 } from "@/lib/icons";
 
@@ -63,8 +62,6 @@ export default function Dashboard() {
     };
   }, [refresh]);
 
-  /* ── Loading / Error states ── */
-
   if (loading && !data) {
     return (
       <div className="h-screen flex items-center justify-center">
@@ -91,57 +88,52 @@ export default function Dashboard() {
   const { network } = data;
 
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* ══════════════════════════════════════════════════════════
-          HEADER
-          ══════════════════════════════════════════════════════════ */}
-      <header className="sticky top-0 z-40 bg-[var(--background)]/90 backdrop-blur-md border-b border-[var(--border)]">
-        <div className="max-w-[1600px] mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-sm bg-[var(--cyan)]/10 flex items-center justify-center">
-              <IconChart className="w-4 h-4 text-[var(--cyan)]" />
+    <div className="h-screen flex flex-col overflow-hidden">
+      {/* ── HEADER ── */}
+      <header className="shrink-0 border-b border-[var(--border)]">
+        <div className="max-w-[1600px] mx-auto px-3 py-1.5 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-6 h-6 rounded-sm bg-[var(--cyan)]/10 flex items-center justify-center">
+              <IconCube className="w-3 h-3 text-[var(--cyan)]" />
             </div>
             <div>
-              <h1 className="text-sm font-bold tracking-widest text-[var(--white)]">
+              <h1 className="text-[11px] font-bold tracking-widest text-[var(--white)] leading-none">
                 TEMPO MONITOR
               </h1>
-              <p className="text-[8px] text-[var(--muted)] tracking-[0.2em]">
+              <p className="text-[7px] text-[var(--muted)] tracking-[0.2em] mt-0.5">
                 HEDGEQUANTX / MODERATO TESTNET
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-5">
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-sm bg-[var(--surface)] border border-[var(--border)]">
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-sm bg-[var(--surface)] border border-[var(--border)]">
               <span
                 className={`inline-block w-1.5 h-1.5 rounded-full ${
-                  connected
-                    ? "bg-[var(--cyan)] live-dot"
-                    : "bg-[var(--rose)]"
+                  connected ? "bg-[var(--cyan)] live-dot" : "bg-[var(--rose)]"
                 }`}
               />
-              <span className="text-[9px] text-[var(--muted)] tracking-widest">
+              <span className="text-[8px] text-[var(--muted)] tracking-widest">
                 {connected ? "WSS LIVE" : "DISCONNECTED"}
               </span>
             </div>
-            <span className="text-[9px] text-[var(--muted)] tracking-wider font-mono">
+            <span className="text-[8px] text-[var(--muted)] tracking-wider font-mono">
               {lastUpdate}
             </span>
             <button
               onClick={refresh}
-              className="p-1.5 rounded-sm border border-[var(--border)] hover:border-[var(--cyan)]/40 transition-colors"
+              className="p-1 rounded-sm border border-[var(--border)] hover:border-[var(--cyan)]/40 transition-colors"
             >
-              <IconRefresh className="w-3.5 h-3.5 text-[var(--muted)]" />
+              <IconRefresh className="w-3 h-3 text-[var(--muted)]" />
             </button>
           </div>
         </div>
       </header>
 
-      {/* ══════════════════════════════════════════════════════════
-          MAIN CONTENT
-          ══════════════════════════════════════════════════════════ */}
-      <main className="flex-1 max-w-[1600px] mx-auto w-full px-4 py-4 flex flex-col gap-3">
-        {/* ── ROW 1: KEY METRICS ── */}
-        <section className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+      {/* ── MAIN ── */}
+      <main className="flex-1 min-h-0 max-w-[1600px] mx-auto w-full px-3 py-2 flex flex-col gap-1.5">
+
+        {/* ROW 1 : STATS + EPOCH (compact, fixed) */}
+        <div className="shrink-0 grid grid-cols-6 gap-1.5">
           <StatCard
             label="BLOCK HEIGHT"
             value={data.blockHeight.toLocaleString()}
@@ -151,7 +143,7 @@ export default function Dashboard() {
           <StatCard
             label="EPOCH"
             value={data.currentEpoch}
-            sub={`${data.epochProgressPct}% COMPLETE`}
+            sub={`${data.epochProgressPct}%`}
             icon={<IconClock />}
             color="white"
           />
@@ -185,89 +177,71 @@ export default function Dashboard() {
             color={
               network.gasUtilization !== null && network.gasUtilization > 80
                 ? "rose"
-                : network.gasUtilization !== null &&
-                    network.gasUtilization > 50
+                : network.gasUtilization !== null && network.gasUtilization > 50
                   ? "yellow"
                   : "white"
             }
           />
-        </section>
+        </div>
 
-        {/* ── ROW 2: EPOCH BAR ── */}
-        <EpochBar
-          epoch={data.currentEpoch}
-          progress={data.epochProgress}
-          progressPct={data.epochProgressPct}
-          epochLength={data.epochLength}
-          nextFullDkg={data.nextFullDkgEpoch}
-        />
+        <div className="shrink-0">
+          <EpochBar
+            epoch={data.currentEpoch}
+            progress={data.epochProgress}
+            progressPct={data.epochProgressPct}
+            epochLength={data.epochLength}
+            nextFullDkg={data.nextFullDkgEpoch}
+          />
+        </div>
 
-        {/* ── ROW 3: CHARTS (3 columns) ── */}
-        <section className="grid grid-cols-1 lg:grid-cols-3 gap-2" style={{ minHeight: 220 }}>
+        {/* ROW 2 : 3 CHARTS (fixed height) */}
+        <div className="shrink-0 grid grid-cols-3 gap-1.5" style={{ height: 180 }}>
           <ChartBlockTime blocks={data.blockHistory} />
           <ChartTps blocks={data.blockHistory} />
           <ChartGas blocks={data.blockHistory} />
-        </section>
+        </div>
 
-        {/* ── ROW 4: FEEDS + VALIDATOR PIE + CHAIN INFO ── */}
-        <section className="grid grid-cols-1 lg:grid-cols-4 gap-2" style={{ minHeight: 340 }}>
+        {/* ROW 3 : FEEDS + VALIDATORS + INFO (fills remaining space, internal scroll) */}
+        <div className="flex-1 min-h-0 grid grid-cols-4 gap-1.5">
           <BlockFeed blocks={data.blockHistory} />
           <RecentTransactions transactions={data.recentTransactions} />
-          <ChartValidators
-            active={data.activeValidators}
-            inactive={data.inactiveValidators}
-            total={data.totalValidators}
-          />
-          <ChainInfo data={data} />
-        </section>
-
-        {/* ── ROW 5: VALIDATOR TABLE ── */}
-        <section style={{ minHeight: 300 }}>
           <ValidatorTable
             validators={data.validators}
             onSelect={setSelectedValidator}
           />
-        </section>
+          {/* Right column: pie + chain info stacked */}
+          <div className="flex flex-col gap-1.5 min-h-0">
+            <ChartValidators
+              active={data.activeValidators}
+              inactive={data.inactiveValidators}
+              total={data.totalValidators}
+            />
+            <div className="flex-1 min-h-0 overflow-y-auto">
+              <ChainInfo data={data} />
+            </div>
+          </div>
+        </div>
       </main>
 
-      {/* ══════════════════════════════════════════════════════════
-          FOOTER
-          ══════════════════════════════════════════════════════════ */}
-      <footer className="border-t border-[var(--border)] bg-[var(--background)]">
-        <div className="max-w-[1600px] mx-auto px-4 py-3 flex items-center justify-between text-[9px] text-[var(--muted)] tracking-widest">
-          <span>CHAIN ID 42431 / MODERATO TESTNET / {data.blockHistory.length}-BLOCK WINDOW</span>
+      {/* ── FOOTER ── */}
+      <footer className="shrink-0 border-t border-[var(--border)]">
+        <div className="max-w-[1600px] mx-auto px-3 py-1 flex items-center justify-between text-[8px] text-[var(--muted)] tracking-widest">
+          <span>CHAIN ID 42431 / MODERATO / {data.blockHistory.length}-BLOCK WINDOW</span>
           <div className="flex items-center gap-4">
-            <a
-              href="https://explore.tempo.xyz"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-[var(--cyan)] transition-colors"
-            >
+            <a href="https://explore.tempo.xyz" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--cyan)] transition-colors">
               EXPLORER
             </a>
-            <a
-              href="https://docs.tempo.xyz"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-[var(--cyan)] transition-colors"
-            >
+            <a href="https://docs.tempo.xyz" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--cyan)] transition-colors">
               DOCS
             </a>
-            <a
-              href="https://github.com/HedgeQuantX"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-[var(--cyan)] transition-colors"
-            >
+            <a href="https://github.com/HedgeQuantX" target="_blank" rel="noopener noreferrer" className="hover:text-[var(--cyan)] transition-colors">
               HEDGEQUANTX
             </a>
           </div>
         </div>
       </footer>
 
-      {/* ══════════════════════════════════════════════════════════
-          VALIDATOR DETAIL MODAL
-          ══════════════════════════════════════════════════════════ */}
+      {/* MODAL */}
       {selectedValidator && (
         <ValidatorDetail
           validator={selectedValidator}
