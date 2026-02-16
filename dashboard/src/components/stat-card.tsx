@@ -5,21 +5,21 @@ interface StatCardProps {
   value: string | number;
   sub?: string;
   icon: React.ReactNode;
-  accent?: "default" | "positive" | "negative" | "warning";
+  color?: "cyan" | "rose" | "yellow" | "white";
 }
 
-const accentMap = {
-  default: "border-[var(--border)]",
-  positive: "border-[var(--positive)]/30",
-  negative: "border-[var(--negative)]/30",
-  warning: "border-[var(--warning)]/30",
+const colorMap = {
+  cyan: "text-[var(--cyan)]",
+  rose: "text-[var(--rose)]",
+  yellow: "text-[var(--yellow)]",
+  white: "text-[var(--white)]",
 };
 
-const valueMap = {
-  default: "text-[var(--foreground)]",
-  positive: "text-[var(--positive)]",
-  negative: "text-[var(--negative)]",
-  warning: "text-[var(--warning)]",
+const borderMap = {
+  cyan: "border-[var(--cyan)]/20",
+  rose: "border-[var(--rose)]/20",
+  yellow: "border-[var(--yellow)]/20",
+  white: "border-[var(--border)]",
 };
 
 export default function StatCard({
@@ -27,21 +27,23 @@ export default function StatCard({
   value,
   sub,
   icon,
-  accent = "default",
+  color = "white",
 }: StatCardProps) {
   return (
     <div
-      className={`relative bg-[var(--surface)] border ${accentMap[accent]} rounded-sm p-5 flex flex-col gap-3 animate-[slideUp_0.4s_ease-out]`}
+      className={`bg-[var(--surface)] border ${borderMap[color]} rounded-sm p-4 flex flex-col gap-2`}
     >
-      <div className="flex items-center gap-2 text-[var(--muted)] text-xs font-medium tracking-widest">
+      <div className="flex items-center gap-2 text-[var(--muted)] text-[10px] font-medium tracking-widest">
         {icon}
         {label}
       </div>
-      <div className={`text-3xl font-bold tracking-tight ${valueMap[accent]}`}>
+      <div className={`text-2xl font-bold tracking-tight ${colorMap[color]}`}>
         {value}
       </div>
       {sub && (
-        <div className="text-[var(--muted)] text-xs tracking-wider">{sub}</div>
+        <div className="text-[var(--muted)] text-[10px] tracking-wider">
+          {sub}
+        </div>
       )}
     </div>
   );
