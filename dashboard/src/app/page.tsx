@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import type { DashboardData } from "@/lib/types";
+import { fetchDashboardData } from "@/lib/fetcher";
 import StatCard from "@/components/stat-card";
 import EpochBar from "@/components/epoch-bar";
 import ValidatorTable from "@/components/validator-table";
@@ -23,13 +24,11 @@ export default function Dashboard() {
 
   const fetchData = useCallback(async () => {
     try {
-      const res = await fetch("/api/validators", { cache: "no-store" });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const json: DashboardData = await res.json();
-      setData(json);
+      const result = await fetchDashboardData();
+      setData(result);
       setError(null);
       setLastUpdate(
-        new Date(json.timestamp).toLocaleTimeString("en-US", {
+        new Date(result.timestamp).toLocaleTimeString("en-US", {
           hour12: false,
         })
       );

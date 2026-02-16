@@ -19,6 +19,6 @@ export const client = createPublicClient({
 });
 
 export const VALIDATOR_CONFIG_ADDRESS =
-  "0x56c0000000000000000000000000000000000000" as const;
+  "0xCccCcCCC00000000000000000000000000000000" as const;
 
-export const EPOCH_LENGTH = 900n; // blocks per epoch on moderato
+export const EPOCH_LENGTH = 21600n; // moderato chainspec

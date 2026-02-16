@@ -1,5 +1,5 @@
-// ABI for the ValidatorConfig precompile -- only the read functions we need.
-// Extracted from the on-chain interface used by `tempo consensus validators-info`.
+// ABI for the ValidatorConfig precompile.
+// Source: crates/contracts/src/precompiles/validator_config.rs
 export const validatorConfigAbi = [
   {
     type: "function",
@@ -8,14 +8,14 @@ export const validatorConfigAbi = [
     outputs: [
       {
         type: "tuple[]",
-        name: "",
+        name: "validators",
         components: [
           { type: "bytes32", name: "publicKey" },
+          { type: "bool", name: "active" },
+          { type: "uint64", name: "index" },
+          { type: "address", name: "validatorAddress" },
           { type: "string", name: "inboundAddress" },
           { type: "string", name: "outboundAddress" },
-          { type: "bool", name: "active" },
-          { type: "address", name: "validatorAddress" },
-          { type: "uint64", name: "index" },
         ],
       },
     ],
@@ -24,6 +24,13 @@ export const validatorConfigAbi = [
   {
     type: "function",
     name: "getNextFullDkgCeremony",
+    inputs: [],
+    outputs: [{ type: "uint64", name: "" }],
+    stateMutability: "view",
+  },
+  {
+    type: "function",
+    name: "validatorCount",
     inputs: [],
     outputs: [{ type: "uint64", name: "" }],
     stateMutability: "view",
