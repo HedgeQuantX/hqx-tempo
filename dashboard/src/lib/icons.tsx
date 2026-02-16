@@ -16,14 +16,6 @@ export function IconCube(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-export function IconSignal(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg {...s} {...props} className={`w-4 h-4 ${props.className ?? ""}`}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9.348 14.652a3.75 3.75 0 0 1 0-5.304m5.304 0a3.75 3.75 0 0 1 0 5.304m-7.425 2.121a6.75 6.75 0 0 1 0-9.546m9.546 0a6.75 6.75 0 0 1 0 9.546M5.106 18.894c-3.808-3.807-3.808-9.98 0-13.788m13.788 0c3.808 3.807 3.808 9.98 0 13.788M12 12h.008v.008H12V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-    </svg>
-  );
-}
-
 export function IconClock(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg {...s} {...props} className={`w-4 h-4 ${props.className ?? ""}`}>
@@ -44,14 +36,6 @@ export function IconKey(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg {...s} {...props} className={`w-4 h-4 ${props.className ?? ""}`}>
       <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
-    </svg>
-  );
-}
-
-export function IconArrowUp(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg {...s} {...props} className={`w-4 h-4 ${props.className ?? ""}`}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" />
     </svg>
   );
 }
@@ -80,3 +64,37 @@ export function IconRefresh(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+export function IconLink(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...s} {...props} className={`w-4 h-4 ${props.className ?? ""}`}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 0 1 1.242 7.244l-4.5 4.5a4.5 4.5 0 0 1-6.364-6.364l1.757-1.757m13.35-.622 1.757-1.757a4.5 4.5 0 0 0-6.364-6.364l-4.5 4.5a4.5 4.5 0 0 0 1.242 7.244" />
+    </svg>
+  );
+}
+
+export function IconGlobe(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...s} {...props} className={`w-4 h-4 ${props.className ?? ""}`}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5a17.92 17.92 0 0 1-8.716-2.247m0 0A9 9 0 0 1 3 12c0-1.47.353-2.856.978-4.082" />
+    </svg>
+  );
+}
+
+export function IconDatabase(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...s} {...props} className={`w-4 h-4 ${props.className ?? ""}`}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" />
+    </svg>
+  );
+}
+
+export function IconChart(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...s} {...props} className={`w-4 h-4 ${props.className ?? ""}`}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+    </svg>
+  );
+}
+
+

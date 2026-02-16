@@ -6,11 +6,13 @@
   --background: #0a0e1a;
   --foreground: #fafafa;
   --surface: #0f1424;
+  --surface-alt: #111828;
   --border: #1a2035;
   --muted: #6b6b76;
   --cyan: #06b6d4;
   --rose: #be185d;
   --yellow: #eab308;
+  --green: #22c55e;
   --white: #fafafa;
 }
 
@@ -20,12 +22,12 @@
   padding: 0;
 }
 
-html, body {
+html {
   height: 100%;
-  overflow: hidden;
 }
 
 body {
+  min-height: 100%;
   color: var(--foreground);
   background: var(--background);
   font-family: var(--font-rajdhani), system-ui, sans-serif;
@@ -45,6 +47,9 @@ body {
   background: var(--border);
   border-radius: 2px;
 }
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
 
 .row-hover {
   transition: background-color 150ms ease;
@@ -59,4 +64,40 @@ body {
 }
 .live-dot {
   animation: livePulse 2s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Section panel styling */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+}
+
+.panel-header {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-title {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+.panel-badge {
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  color: var(--muted);
 }

@@ -16,9 +16,9 @@ const colorMap = {
 };
 
 const borderMap = {
-  cyan: "border-[var(--cyan)]/20",
-  rose: "border-[var(--rose)]/20",
-  yellow: "border-[var(--yellow)]/20",
+  cyan: "border-[var(--cyan)]/15",
+  rose: "border-[var(--rose)]/15",
+  yellow: "border-[var(--yellow)]/15",
   white: "border-[var(--border)]",
 };
 
@@ -31,17 +31,17 @@ export default function StatCard({
 }: StatCardProps) {
   return (
     <div
-      className={`bg-[var(--surface)] border ${borderMap[color]} rounded-sm p-4 flex flex-col gap-2`}
+      className={`bg-[var(--surface)] border ${borderMap[color]} rounded-sm p-3 flex flex-col gap-1.5`}
     >
-      <div className="flex items-center gap-2 text-[var(--muted)] text-[10px] font-medium tracking-widest">
+      <div className="flex items-center gap-1.5 text-[var(--muted)] text-[9px] font-medium tracking-widest">
         {icon}
         {label}
       </div>
-      <div className={`text-2xl font-bold tracking-tight ${colorMap[color]}`}>
+      <div className={`text-xl font-bold tracking-tight leading-none ${colorMap[color]}`}>
         {value}
       </div>
       {sub && (
-        <div className="text-[var(--muted)] text-[10px] tracking-wider">
+        <div className="text-[var(--muted)] text-[8px] tracking-wider">
           {sub}
         </div>
       )}

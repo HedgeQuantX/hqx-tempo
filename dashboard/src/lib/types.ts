@@ -8,12 +8,38 @@ export interface ValidatorData {
 }
 
 export interface NetworkMetrics {
-  blockTime: number | null;     // avg seconds between blocks
-  tps: number | null;           // transactions per second
-  gasUtilization: number | null; // percentage of gas limit used
+  blockTime: number | null;
+  tps: number | null;
+  gasUtilization: number | null;
   latestBlockTxCount: number;
   latestBlockGasUsed: bigint | null;
   latestBlockGasLimit: bigint | null;
+  peakTps: number | null;
+  avgGasPerBlock: number;
+  totalTxInWindow: number;
+}
+
+/** Single block snapshot for chart history. */
+export interface BlockSample {
+  number: number;
+  timestamp: number;
+  txCount: number;
+  gasUsed: number;
+  gasLimit: number;
+  blockTime: number | null;
+  miner: string;
+  hash: string;
+}
+
+/** Recent on-chain transaction summary. */
+export interface RecentTx {
+  hash: string;
+  from: string;
+  to: string | null;
+  value: string;
+  blockNumber: number;
+  timestamp: number;
+  gasUsed: number | null;
 }
 
 export interface DashboardData {
@@ -28,5 +54,7 @@ export interface DashboardData {
   inactiveValidators: number;
   validators: ValidatorData[];
   network: NetworkMetrics;
+  blockHistory: BlockSample[];
+  recentTransactions: RecentTx[];
   timestamp: number;
 }

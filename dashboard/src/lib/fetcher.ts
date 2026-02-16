@@ -1,45 +1,130 @@
+import { formatEther } from "viem";
 import { client, VALIDATOR_CONFIG_ADDRESS, EPOCH_LENGTH } from "./tempo";
 import { validatorConfigAbi } from "./contracts";
-import type { DashboardData, ValidatorData, NetworkMetrics } from "./types";
+import type {
+  DashboardData,
+  ValidatorData,
+  NetworkMetrics,
+  BlockSample,
+  RecentTx,
+} from "./types";
 
-async function fetchNetworkMetrics(): Promise<NetworkMetrics> {
-  const latest = await client.getBlock({ blockTag: "latest" });
-  const prev = await client.getBlock({
-    blockNumber: latest.number - 5n,
+const HISTORY_DEPTH = 30;
+
+async function fetchBlockHistory(): Promise<{
+  samples: BlockSample[];
+  network: NetworkMetrics;
+  recentTx: RecentTx[];
+}> {
+  const latest = await client.getBlock({
+    blockTag: "latest",
+    includeTransactions: true,
   });
 
-  const timeDelta = Number(latest.timestamp - prev.timestamp);
-  const blockDelta = Number(latest.number - prev.number);
-  const blockTime = blockDelta > 0 ? timeDelta / blockDelta : null;
+  const blockNumbers = Array.from(
+    { length: HISTORY_DEPTH },
+    (_, i) => latest.number - BigInt(i)
+  );
 
-  let totalTx = 0;
-  for (let i = latest.number; i > latest.number - 5n; i--) {
-    const b = i === latest.number
-      ? latest
-      : await client.getBlock({ blockNumber: i });
-    totalTx += b.transactions.length;
-  }
-  const tps = timeDelta > 0 ? totalTx / timeDelta : null;
+  const blocks = await Promise.all(
+    blockNumbers.map((n) =>
+      n === latest.number
+        ? Promise.resolve(latest)
+        : client.getBlock({ blockNumber: n, includeTransactions: true })
+    )
+  );
 
-  const gasUsed = latest.gasUsed;
-  const gasLimit = latest.gasLimit;
-  const gasUtilization =
-    gasLimit > 0n
-      ? Math.round(Number((gasUsed * 10000n) / gasLimit)) / 100
+  // Oldest first for charts
+  blocks.reverse();
+
+  const samples: BlockSample[] = blocks.map((b, i) => {
+    const prevTs = i > 0 ? blocks[i - 1].timestamp : null;
+    const bt = prevTs !== null ? Number(b.timestamp - prevTs) : null;
+    return {
+      number: Number(b.number),
+      timestamp: Number(b.timestamp),
+      txCount: b.transactions.length,
+      gasUsed: Number(b.gasUsed),
+      gasLimit: Number(b.gasLimit),
+      blockTime: bt,
+      miner: b.miner,
+      hash: b.hash,
+    };
+  });
+
+  // Network metrics from last 10 blocks
+  const window = samples.slice(-10);
+  const timeDelta =
+    window.length >= 2
+      ? window[window.length - 1].timestamp - window[0].timestamp
+      : 0;
+  const blockDelta = window.length - 1;
+  const blockTime =
+    blockDelta > 0 && timeDelta > 0
+      ? Math.round((timeDelta / blockDelta) * 100) / 100
       : null;
 
-  return {
-    blockTime: blockTime ? Math.round(blockTime * 100) / 100 : null,
-    tps: tps ? Math.round(tps * 10) / 10 : null,
+  const totalTxInWindow = window.reduce((s, b) => s + b.txCount, 0);
+  const tps =
+    timeDelta > 0 ? Math.round((totalTxInWindow / timeDelta) * 10) / 10 : null;
+
+  // Peak TPS: max tx count in a single block / block time
+  let peakTps: number | null = null;
+  for (const s of samples) {
+    if (s.blockTime && s.blockTime > 0) {
+      const instantTps = s.txCount / s.blockTime;
+      if (peakTps === null || instantTps > peakTps) {
+        peakTps = Math.round(instantTps * 10) / 10;
+      }
+    }
+  }
+
+  const lastSample = samples[samples.length - 1];
+  const gasUtilization =
+    lastSample.gasLimit > 0
+      ? Math.round((lastSample.gasUsed / lastSample.gasLimit) * 10000) / 100
+      : null;
+
+  const avgGasPerBlock = Math.round(
+    samples.reduce((s, b) => s + b.gasUsed, 0) / samples.length
+  );
+
+  const network: NetworkMetrics = {
+    blockTime,
+    tps,
     gasUtilization,
-    latestBlockTxCount: latest.transactions.length,
-    latestBlockGasUsed: gasUsed,
-    latestBlockGasLimit: gasLimit,
+    latestBlockTxCount: lastSample.txCount,
+    latestBlockGasUsed: latest.gasUsed,
+    latestBlockGasLimit: latest.gasLimit,
+    peakTps,
+    avgGasPerBlock,
+    totalTxInWindow,
   };
+
+  // Collect transactions from the latest 3 blocks
+  const txBlocks = blocks.slice(-3).reverse();
+  const recentTx: RecentTx[] = [];
+  for (const blk of txBlocks) {
+    for (const tx of blk.transactions.slice(0, 10)) {
+      if (recentTx.length >= 20) break;
+      recentTx.push({
+        hash: tx.hash,
+        from: tx.from,
+        to: tx.to,
+        value: formatEther(tx.value),
+        blockNumber: Number(blk.number),
+        timestamp: Number(blk.timestamp),
+        gasUsed: null, // would require receipt call, skip for perf
+      });
+    }
+    if (recentTx.length >= 20) break;
+  }
+
+  return { samples, network, recentTx };
 }
 
 export async function fetchDashboardData(): Promise<DashboardData> {
-  const [validators, blockNumber, nextFullDkg, network] = await Promise.all([
+  const [validators, blockNumber, nextFullDkg, history] = await Promise.all([
     client.readContract({
       address: VALIDATOR_CONFIG_ADDRESS,
       abi: validatorConfigAbi,
@@ -51,7 +136,7 @@ export async function fetchDashboardData(): Promise<DashboardData> {
       abi: validatorConfigAbi,
       functionName: "getNextFullDkgCeremony",
     }),
-    fetchNetworkMetrics(),
+    fetchBlockHistory(),
   ]);
 
   const currentEpoch = Number(blockNumber / EPOCH_LENGTH) + 1;
@@ -82,7 +167,9 @@ export async function fetchDashboardData(): Promise<DashboardData> {
     activeValidators: activeCount,
     inactiveValidators: parsed.length - activeCount,
     validators: parsed,
-    network,
+    network: history.network,
+    blockHistory: history.samples,
+    recentTransactions: history.recentTx,
     timestamp: Date.now(),
   };
 }
